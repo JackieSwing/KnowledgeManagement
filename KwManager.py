@@ -121,7 +121,7 @@ def find_note(path_note, str_note):
         idx = 0
         for line in lines:
             idx += 1
-            if line.find(str_note) >= 0:
+            if line.upper().find(str_note.upper()) >= 0:
                 logging.info('\t[%d]: %s'%(idx, line[:-1]))
     return KW_OK
 '''
@@ -184,7 +184,7 @@ if __name__ == "__main__":
         logging.error('Init global varibles failed')
         exit()
     else:
-        logging.debug('Init global varibles success')        
+        logging.debug('Init global varibles success')
 
     # step2: parse args
     logging.debug('Parse args of input')
