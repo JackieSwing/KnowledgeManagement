@@ -23,7 +23,7 @@ PATH_NOTE = ''
 def arg_parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('--file', '-F', type=str, default=PATH_NOTE, help='note file path')
-    parser.add_argument('--mode', '-M', type=str, default='S', help='using mode, I(insert) | D(delete) | E(edit) | S(search)')
+    parser.add_argument('--mode', '-M', type=str, default='F', help='using mode, I(insert) | D(delete) | E(edit) | F(find)')
     parser.add_argument('--line', '-L', type=int, default=0, help='edit line, using on delete or edit mode')
     parser.add_argument('--str', '-S', type=str, default='none', help='line content string')
     parser.add_argument('--enc', '-E', type=int, default=0, help='whether encrypt or not')
@@ -58,13 +58,13 @@ def init_globals():
 '''
 def process(args):
     ret = KW_OK
-    if args.mode == 'I':
+    if args.mode == 'I' or args.mode == 'insert' or args.mode == 'Insert' or args.mode == 'INSERT':
         ret = insert_note(args.file, args.str)
-    elif args.mode == 'D':
+    elif args.mode == 'D' or args.mode == 'delete' or args.mode == 'Delete' or args.mode == 'DELETE':
         ret = del_note(args.file, args.line)
-    elif args.mode == 'E':
+    elif args.mode == 'E' or args.mode == 'edit' or args.mode == 'Edit' or args.mode == 'EDIT':
         ret = edit_note(args.file, args.line, args.str)
-    elif args.mode == 'S':
+    elif args.mode == 'F' or args.mode == 'find' or args.mode == 'Find' or args.mode == 'FIND':
         ret = find_note(args.file, args.str)
     return ret
 '''
