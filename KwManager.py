@@ -25,7 +25,8 @@ def arg_parse():
     parser.add_argument('--file', '-F', type=str, default=PATH_NOTE, help='note file path')
     parser.add_argument('--mode', '-M', type=str, default='S', help='using mode, I(insert) | D(delete) | E(edit) | S(search)')
     parser.add_argument('--line', '-L', type=int, default=0, help='edit line, using on delete or edit mode')
-    parser.add_argument('--content', '-C', type=str, default='none', help='line content')
+    parser.add_argument('--str', '-S', type=str, default='none', help='line content string')
+    parser.add_argument('--enc', '-E', type=int, default=0, help='whether encrypt or not')
     args = parser.parse_args()
     return args
 '''
@@ -58,13 +59,13 @@ def init_globals():
 def process(args):
     ret = KW_OK
     if args.mode == 'I':
-        ret = insert_note(args.file, args.content)
+        ret = insert_note(args.file, args.str)
     elif args.mode == 'D':
         ret = del_note(args.file, args.line)
     elif args.mode == 'E':
-        ret = edit_note(args.file, args.line, args.content)
+        ret = edit_note(args.file, args.line, args.str)
     elif args.mode == 'S':
-        ret = find_note(args.file, args.content)
+        ret = find_note(args.file, args.str)
     return ret
 '''
     @func: insert_note
@@ -189,7 +190,7 @@ if __name__ == "__main__":
     # step2: parse args
     logging.debug('Parse args of input')
     args = arg_parse()
-    logging.debug('Args: file %s, line %d, mode %s, content %s'%(args.file, args.line, args.mode, args.content))
+    logging.debug('Args: file %s, line %d, mode %s, content %s'%(args.file, args.line, args.mode, args.str))
 
     # step3: process
     ret = process(args)
