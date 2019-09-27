@@ -4,11 +4,14 @@ import sys, os
 import argparse
 import platform
 import logging
+import base64
 '''
 '''
 # define gloal const
 KW_OK = 1
 KW_ERR = 0
+STR_ENC_ON = 1
+STR_ENC_OFF = 0
 '''
 '''
 # define global variables
@@ -26,7 +29,7 @@ def arg_parse():
     parser.add_argument('--mode', '-M', type=str, default='F', help='using mode, I(insert) | D(delete) | E(edit) | F(find)')
     parser.add_argument('--line', '-L', type=int, default=0, help='edit line, using on delete or edit mode')
     parser.add_argument('--str', '-S', type=str, default='none', help='line content string')
-    parser.add_argument('--enc', '-E', type=int, default=0, help='whether encrypt or not')
+    parser.add_argument('--enc', '-E', type=int, default=STR_ENC_OFF, help='whether encrypt or not')
     args = parser.parse_args()
     return args
 '''
@@ -51,6 +54,24 @@ def init_globals():
         logging.error('Running on Unknown system, system string is %s'%(sysstr))
         return KW_ERR
 '''
+    @func: str_encrypt
+    @author: Jackie
+    @date: 2019-09-26
+    @desprition: str_encrypt
+'''
+def str_encrypt(str_src):
+    str_enc = base64.b64encode(str_src)
+    return str_enc
+'''
+    @func: str_decrypt
+    @author: Jackie
+    @date: 2019-09-26
+    @desprition: str_decrypt
+'''
+def str_decrypt(str_enc):
+    str_dec = base64.b64decode(str_enc)
+    return str_dec
+'''
     @func: process
     @author: Jackie
     @date: 2019-09-24
@@ -59,6 +80,10 @@ def init_globals():
 def process(args):
     ret = KW_OK
     if args.mode == 'I' or args.mode == 'insert' or args.mode == 'Insert' or args.mode == 'INSERT':
+        if args.enc == STR_ENC_ON:
+            args.str = '[C]' + str_encrypt(args.str)
+        else:
+            args.str = '[P]' + args.str
         ret = insert_note(args.file, args.str)
     elif args.mode == 'D' or args.mode == 'delete' or args.mode == 'Delete' or args.mode == 'DELETE':
         ret = del_note(args.file, args.line)
@@ -119,11 +144,21 @@ def find_note(path_note, str_note):
     logging.info('Search content %s in file %s'%(str_note, path_note))
     with open(path_note, 'r') as fp:
         lines = fp.readlines()
+        found = False
         idx = 0
         for line in lines:
             idx += 1
-            if line.upper().find(str_note.upper()) >= 0:
-                logging.info('\t[%d]: %s'%(idx, line[:-1]))
+            tag = line[1]
+            if tag == 'P':
+                line_note = line[3:-1]
+            else:
+                line_note = str_decrypt(line[3:-1])
+            logging.debug('idx %d, note %s, key %s'%(idx, line_note, str_note))
+            if line_note.upper().find(str_note.upper()) >= 0:
+                found = True
+                logging.info('\t[%d]: %s'%(idx, line_note))
+    if found == False:
+        logging.warning('No line matched!')
     return KW_OK
 '''
     @func: edit_note
