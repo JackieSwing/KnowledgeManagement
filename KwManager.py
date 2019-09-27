@@ -91,6 +91,8 @@ def process(args):
         ret = edit_note(args.file, args.line, args.str)
     elif args.mode == 'F' or args.mode == 'find' or args.mode == 'Find' or args.mode == 'FIND':
         ret = find_note(args.file, args.str)
+    else:
+        logging.error('Mode "%s" is invalid, please input again'%(args.mode))
     return ret
 '''
     @func: insert_note
