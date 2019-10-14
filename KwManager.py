@@ -157,7 +157,7 @@ def find_note(path_note, str_note):
                 line_note = str_decrypt(line[3:-1])
             else:
                 logging.error('Invalid line tag %s'%(tag))
-                return MK_ERR
+                return KW_ERR
             logging.debug('idx %d, note %s, key %s'%(idx, line_note, str_note))
             if line_note.upper().find(str_note.upper()) >= 0:
                 found = True
