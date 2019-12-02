@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 def init():
     logger.basicConfig(
         level=logger.INFO,
-        format='%[(levelname)]s: %(message)s'
+        format='%(levelname)s: %(message)s'
     )
 
 
@@ -89,8 +89,8 @@ def predict(X, Y, alpha, maxSteps, thresLoss, mode):
 # main
 if __name__ == '__main__':
     # 初始化
-    logger.info('[1]: Init configuration')
     init()
+    logger.info('[1]: Init configuration')
 
     # 解析输入参数
     logger.info('[2]: Parse args')
@@ -108,8 +108,15 @@ if __name__ == '__main__':
     # 画图
     logger.info('[5]: Draw plot')
     Y_ = np.dot(thetas.T, X)
+    featNum = X.shape[0]
+
     plt.figure()
-    plt.scatter(X[1, :].reshape(1, -1), Y, s=5, color='r')
-    plt.plot(X[1, :], Y_.T, color='b')
+    if featNum > 2:  # 若特征数大于2，即多元线性回归，则画Y-Y_的散点图，同时以Y-Y曲线作为参照
+        plt.scatter(Y_, Y, s=5, color='r')
+        plt.plot(Y_.T, Y_.T, color='b')
+    else:  # 若特征数等于2，即一元线性回归，则画Y-X散点图和Y_-X的曲线作为参照
+        plt.scatter(X[1, :].reshape(1, -1), Y, s=5, color='r')
+        plt.plot(X[1, :], Y_.T, color='b')
+
     plt.show()
     pass
